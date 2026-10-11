@@ -1,4 +1,4 @@
-# Al-Farooq (localhost demo)
+# Al-Farooq (localhost demo) (Unfinished)
 
 A demo of a secure admin login system. An admin logs in from a **desktop app**;
 the server checks the password **and** that the request comes from an **approved
