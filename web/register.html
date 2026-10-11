@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Al-Farooq - Register</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <h1>Create an account</h1>
+  <form id="form">
+    <label>Email <input name="email" type="email" required autocomplete="email"></label>
+    <label>Username <input name="username" required minlength="3" maxlength="32" autocomplete="username"></label>
+    <label>Password (12+ characters)
+      <input name="password" type="password" required minlength="12" autocomplete="new-password"></label>
+    <label>Confirm password
+      <input name="confirm_password" type="password" required minlength="12" autocomplete="new-password"></label>
+    <label>Phone <input name="phone" type="tel" required autocomplete="tel"></label>
+    <button type="submit">Register</button>
+  </form>
+  <p id="msg"></p>
+  <p class="hint">Already have an account? Admins log in from the Al-Farooq desktop app.</p>
+  <p class="hint">Demo note: there is no mail server. The verification link is printed in the server console.</p>
+</main>
+<script src="register.js"></script>
+</body>
+</html>

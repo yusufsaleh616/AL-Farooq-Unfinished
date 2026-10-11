@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Al-Farooq - Admin panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="wide">
+  <h1 id="welcome">Admin panel</h1>
+  <p id="who"></p>
+  <button id="logout" class="plain" hidden>Log out</button>
+
+  <div id="super" hidden>
+    <h2>Devices</h2>
+    <table>
+      <thead><tr><th>ID</th><th>User</th><th>Status</th><th></th></tr></thead>
+      <tbody id="devices"></tbody>
+    </table>
+
+    <h2>Recent security events</h2>
+    <table>
+      <thead><tr><th>Time</th><th>Event</th><th>User</th><th>IP</th><th>Detail</th></tr></thead>
+      <tbody id="audit"></tbody>
+    </table>
+  </div>
+  <p id="msg"></p>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
