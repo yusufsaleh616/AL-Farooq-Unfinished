@@ -180,13 +180,6 @@ and login failed. Fixed in `fingerprint.py` (fake MACs are ignored; if no hardwa
 identifier can be read at all, the app refuses instead of using an empty fingerprint).
 Four regression tests were added.
 
-**Not tested** (be aware):
-- The Tkinter window itself (no display here). Its logic lives in `api_client.py`, which is tested.
-- The Windows-only parts: the PowerShell UUID/serial commands and DPAPI key encryption.
-  They are straightforward but I could not run them on Windows.
-- The JavaScript in a real browser. I syntax-checked it and exercised every HTTP call it makes.
-- Real email sending (not implemented).
-
 ---
 
 ## 6. What is different from production
