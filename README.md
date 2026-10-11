@@ -108,49 +108,9 @@ AlFarooq/
   requirements.txt
 ```
 
----
 
-## 4. What I did, step by step
 
-1. **Read your whole zip** (11 earlier iterations, about 1,800 lines of real code,
-   plus notes and your sketch) and picked `New folder/al-farooq` (FastAPI) as the base,
-   since it is the only one matching your sketch.
-2. **Audited it** and the older versions (findings in sections 5 and 8).
-3. **Rebuilt the backend** on FastAPI with your folder layout, adding all the fixes below.
-4. **Wrote the web pages** (register, token redeem, dashboard). `app.js`, `deps.py`
-   and `schemas.py` were empty before; they are real now.
-5. **Rewrote the desktop app** (fingerprint, key handling, API client, UI).
-6. **Wrote 34 tests**, then broke the code on purpose five ways to check the tests
-   notice (section 7).
-7. **Ran the real thing**: real server, real desktop client over HTTP, curl as the
-   browser. This found one bug the tests missed (random MAC address, section 7), now fixed.
-8. **Archived your old versions** without any key, database or token, and put your
-   notes and sketch in `docs/`.
-
----
-
-## 5. What was wrong in your latest version, and what changed
-
-| Before (`New folder/al-farooq`) | Now |
-|---|---|
-| `SECRET_KEY = "CHANGE_ME_NOW"` and a hardcoded session secret | Secret comes from `ALFAROOQ_PEPPER` or an auto-generated `backend/.pepper` file. Nothing secret is in the code. |
-| Default admin `admin` / `admin123` with device `TEST_DEVICE` | No default account. First super admin is created from the console. |
-| Desktop sent the raw device string, server compared an HMAC. Copying the string was enough. | Device has an Ed25519 key pair. Server stores only the public key. Login needs a signature over a fresh nonce. |
-| One-time tokens in a Python dict, TTL 999 s, in a GET URL (ends up in logs/history) | Tokens in the database, hashed, TTL 60 s, single use, in the URL fragment (`#token=`) and redeemed with a POST. The page also removes it from the address bar. |
-| Login took a bare `dict`; a missing field caused a 500 | Pydantic models with length limits; bad input gives a clean 422. |
-| SHA-256 pre-hash + bcrypt | Argon2id (no 72-byte workaround needed). |
-| No rate limit, lockout, audit log or roles | All added (section 6). |
-| No cookie flags | `HttpOnly`, `SameSite=Strict`, idle + absolute expiry. |
-| Empty `deps.py`, `schemas.py`, `app.js` | Implemented. |
-| `requirements.txt` listed `redis`, `python-jose` and `psycopg2-binary`, none of which the code used | Removed. `passlib` (bcrypt) was replaced by `argon2-cffi`. |
-| `Admin` table with a `device_hash` column (one device per admin) | `users` + `devices` tables: several approved devices per admin. |
-
-Older versions also had `verify=False` (3 clients), `debug=True` on `0.0.0.0`, plain
-SHA-256 passwords and hardcoded `123456` passwords. None of that is in the new code.
-
----
-
-## 6. The security fixes in detail
+## 4. The security fixes in detail
 
 These cover the 8 risks from my earlier review, plus the extras.
 
@@ -193,7 +153,7 @@ Extras:
 
 ---
 
-## 7. Testing
+## 5. Testing
 
 **34 automated tests** (`cd backend && python -m pytest`), all passing. They cover:
 signup validation and duplicate handling, Argon2id storage, email-link single use,
@@ -229,7 +189,7 @@ Four regression tests were added.
 
 ---
 
-## 8. What is different from production
+## 6. What is different from production
 
 This is a localhost demo, so I kept these simple on purpose:
 
@@ -245,7 +205,7 @@ This is a localhost demo, so I kept these simple on purpose:
 
 ---
 
-## 9. Known limitations / not done
+## 7. Known limitations / not done
 
 - **Fingerprint login with the OS biometric** (Windows Hello / Secure Enclave) from your
   original notes is **not implemented**. It is an OS feature that would be added around the app.
@@ -262,23 +222,7 @@ This is a localhost demo, so I kept these simple on purpose:
   could use it.
 - The 15 min idle / 8 h limits and 5-failure lockout are my choices. Change them in `config.py`.
 
----
-
-## 10. Secrets found in your original zip
-
-Please treat these as **compromised**, even if they were only for testing:
-
-- `APP5/server/keys/server_private.pem` (RSA private key) and `APP5/fernet.key`
-- `token.json` / `token.txt` files in several folders
-- About 10 SQLite databases containing user rows (I did not open them)
-
-None of them were copied into this package. If any of those keys ever protected something real,
-replace them. If this project goes into Git, `.gitignore` already excludes `.pepper`, `*.db`
-and the device key folder.
-
----
-
-## 11. API reference
+## 8. API reference
 
 | Method | Path | Who | What |
 |---|---|---|---|
@@ -296,7 +240,7 @@ and the device key folder.
 
 Interactive docs are at <http://localhost:8000/docs> while the server runs.
 
-## 12. Settings (environment variables)
+## 9. Settings (environment variables)
 
 | Variable | Default | Meaning |
 |---|---|---|
@@ -312,7 +256,7 @@ Timings and limits (nonce 60 s, token 60 s, idle 15 min, lock 5 fails / 15 min .
 
 ---
 
-## 13. Troubleshooting
+## 10. Troubleshooting
 
 - **"Cross-site request blocked" in the browser**: you opened the site as `127.0.0.1`. Use
   `http://localhost:8000`, or set `ALFAROOQ_PUBLIC_URL` to the address you use.
